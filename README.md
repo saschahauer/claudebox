@@ -144,10 +144,25 @@ sudo systemctl stop claude-netns.service
 ```
 --no-internet, -n           Disable all network access
 --allow-hosts FILE, -a FILE Load allowed hosts from configuration file
+--shell, -s                 Start bash shell instead of Claude (for testing)
 --help, -h                  Show usage information
 ```
 
 All other arguments are passed directly to Claude.
+
+### Testing and Debugging
+
+To test the container environment without running Claude:
+
+```bash
+./run-claude.sh --shell
+
+# Inside the container shell, you can:
+# - Test network connectivity: curl https://github.com
+# - Check mounts: ls -la ~/git/
+# - Verify environment: echo $HOME, whoami
+# - Test file permissions: touch test.txt
+```
 
 ## How It Works
 

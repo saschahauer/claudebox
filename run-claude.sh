@@ -5,6 +5,7 @@ set -e
 NETWORK_MODE="default"
 ALLOWED_HOSTS_FILE=""
 CLAUDE_ARGS=()
+RUN_SHELL=false
 
 # Usage function
 usage() {
@@ -16,6 +17,7 @@ Run Claude Code in a sandboxed container with network isolation.
 OPTIONS:
   --no-internet, -n           Disable all network access (--network=none)
   --allow-hosts FILE, -a FILE Load allowed hosts from configuration file
+  --shell, -s                 Start bash shell instead of Claude (for testing)
   --help, -h                  Show this help message
 
 NETWORK MODES:
@@ -34,6 +36,7 @@ EXAMPLES:
   ./run-claude.sh                                    # Default: internet, no local network
   ./run-claude.sh --no-internet                      # No network at all
   ./run-claude.sh --allow-hosts allowed-hosts.conf   # Filtered via iptables (requires setup)
+  ./run-claude.sh --shell                            # Start bash for testing
 
   # Pass arguments to Claude:
   ./run-claude.sh "help me debug this code"
@@ -66,6 +69,10 @@ while [[ $# -gt 0 ]]; do
             ALLOWED_HOSTS_FILE="$2"
             NETWORK_MODE="allowed-hosts"
             shift 2
+            ;;
+        --shell|-s)
+            RUN_SHELL=true
+            shift
             ;;
         --help|-h)
             usage
@@ -154,12 +161,23 @@ if ! podman image exists claude-sandbox:latest; then
 fi
 
 # Run the container
-echo "Starting Claude in container..."
+if [ "$RUN_SHELL" = true ]; then
+    echo "Starting bash shell in container..."
+else
+    echo "Starting Claude in container..."
+fi
 echo "Working directory: $CURRENT_DIR"
 if [ -n "$GIT_DIR" ]; then
     echo "Git directory: $GIT_DIR (readonly)"
 fi
 echo ""
+
+# Choose command to run
+if [ "$RUN_SHELL" = true ]; then
+    CONTAINER_CMD="/bin/bash"
+else
+    CONTAINER_CMD="/usr/local/bin/claude --dangerously-skip-permissions ${CLAUDE_ARGS[@]}"
+fi
 
 exec podman run \
     --rm \
@@ -173,4 +191,4 @@ exec podman run \
     $MOUNTS \
     $NETWORK_ARGS \
     claude-sandbox:latest \
-    /usr/local/bin/claude --dangerously-skip-permissions "${CLAUDE_ARGS[@]}"
+    $CONTAINER_CMD
