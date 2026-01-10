@@ -65,10 +65,12 @@ cp allowed-hosts.conf.example allowed-hosts.conf
 
 ### Run Script (run-claude.sh)
 **Mount strategy**:
-- Current directory (`$(pwd)`): Mounted read-write at same absolute path
-- `~/git/` directory: Mounted readonly (when exists)
-- **Special case**: When `$(pwd)` is inside `~/git/`, the current directory is mounted read-write on top of readonly `~/git/`
-- `~/.claude/` and `~/.claude.json`: Mounted read-write for state persistence
+- **Home directory**: `~/claude` on host → `~` in container (read-write)
+  - This is where Claude's state, config, and data are stored
+  - `.claude/` and `.claude.json` live inside this directory
+- Current directory (`$(pwd)`): Mounted read-write at same absolute path (unless inside `~/claude`)
+- `~/git/` directory: Mounted readonly (when exists, unless inside `~/claude`)
+- **Special case**: When `$(pwd)` or `~/git/` are inside `~/claude`, they're already accessible via the home mount
 
 **User mapping**:
 - Uses `--userns=keep-id` to preserve host UID/GID

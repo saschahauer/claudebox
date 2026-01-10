@@ -44,10 +44,9 @@ EXAMPLES:
 
 SECURITY NOTES:
   - Container runs with --dangerously-skip-permissions (no permission prompts)
-  - \$(pwd) is mounted read-write at the same path
-  - ~/git/ is mounted readonly (if exists)
-  - When \$(pwd) is inside ~/git/, it remains writable
-  - Claude config (~/.claude) is persisted between runs
+  - ~/claude on host is mounted read-write as ~ in container
+  - \$(pwd) is mounted read-write at the same path (unless inside ~/claude)
+  - ~/git/ is mounted readonly (if exists, unless inside ~/claude)
   - --allow-hosts mode uses iptables for TRUE network filtering at IP level
 
 EOF
@@ -99,19 +98,25 @@ if [ -d "$HOME/git" ]; then
 fi
 
 # Build mount arguments
-MOUNTS="-v $CURRENT_DIR:$CURRENT_DIR:rw"
+MOUNTS=""
 
-# Add git directory mount if it exists
-if [ -n "$GIT_DIR" ]; then
-    MOUNTS="$MOUNTS -v $GIT_DIR:$GIT_DIR:ro"
+# Mount ~/claude as the home directory in the container
+CLAUDE_HOME="$HOST_HOME/claude"
+if [ ! -d "$CLAUDE_HOME" ]; then
+    echo "Error: Directory $CLAUDE_HOME does not exist"
+    echo "Please create it first: mkdir -p $CLAUDE_HOME"
+    exit 1
+fi
+MOUNTS="$MOUNTS -v $CLAUDE_HOME:$HOST_HOME:rw"
+
+# Mount current directory read-write (unless it's inside ~/claude)
+if [[ "$CURRENT_DIR" != "$CLAUDE_HOME"* ]]; then
+    MOUNTS="$MOUNTS -v $CURRENT_DIR:$CURRENT_DIR:rw"
 fi
 
-# Mount Claude config and state directories
-MOUNTS="$MOUNTS -v $HOST_HOME/.claude:$HOST_HOME/.claude"
-
-# Mount Claude config file if it exists (read-write so Claude can update settings)
-if [ -f "$HOST_HOME/.claude.json" ]; then
-    MOUNTS="$MOUNTS -v $HOST_HOME/.claude.json:$HOST_HOME/.claude.json"
+# Add git directory mount if it exists (unless it's inside ~/claude)
+if [ -n "$GIT_DIR" ] && [[ "$GIT_DIR" != "$CLAUDE_HOME"* ]]; then
+    MOUNTS="$MOUNTS -v $GIT_DIR:$GIT_DIR:ro"
 fi
 
 # Build network arguments
@@ -166,8 +171,9 @@ if [ "$RUN_SHELL" = true ]; then
 else
     echo "Starting Claude in container..."
 fi
+echo "Home directory: $CLAUDE_HOME -> $HOST_HOME (read-write)"
 echo "Working directory: $CURRENT_DIR"
-if [ -n "$GIT_DIR" ]; then
+if [ -n "$GIT_DIR" ] && [[ "$GIT_DIR" != "$CLAUDE_HOME"* ]]; then
     echo "Git directory: $GIT_DIR (readonly)"
 fi
 echo ""
