@@ -4,6 +4,36 @@ FROM debian:trixie-slim
 RUN apt-get update && apt-get install -y \
     curl \
     ca-certificates \
+    iputils-ping \
+    net-tools \
+    git \
+    python3 \
+    virtualenv \
+    flex \
+    gawk \
+    lz4 \
+    util-linux \
+    wget \
+    curl \
+    lzop \
+    libtool \
+    build-essential \
+    coreutils \
+    device-tree-compiler \
+    u-boot-tools \
+    yamllint \
+    pkg-config \
+    qemu-system-arm \
+    qemu-system-misc \
+    qemu-system-mips \
+    qemu-system-x86 \
+    qemu-system-common \
+    imagemagick \
+    yq \
+    openssl \
+    gcc-multilib \
+    bash \
+    bash-completion \
     && rm -rf /var/lib/apt/lists/*
 
 # Install Claude and set up PATH
