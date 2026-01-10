@@ -424,7 +424,7 @@ Host System (Debian Trixie)
 │       │   ├── $(pwd) -> $(pwd) [rw]
 │       │   ├── ~/git/ -> ~/git/ [ro]
 │       │   ├── ~/.claude/ -> ~/.claude/ [rw]
-│       │   └── ~/.claude.json -> ~/.claude.json [ro]
+│       │   └── ~/.claude.json -> ~/.claude.json [rw]
 │       │
 │       ├── Network: slirp4netns
 │       │   └── User-mode networking (internet, no LAN access)

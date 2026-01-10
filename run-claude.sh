@@ -102,9 +102,9 @@ fi
 # Mount Claude config and state directories
 MOUNTS="$MOUNTS -v $HOST_HOME/.claude:$HOST_HOME/.claude"
 
-# Mount Claude config file if it exists
+# Mount Claude config file if it exists (read-write so Claude can update settings)
 if [ -f "$HOST_HOME/.claude.json" ]; then
-    MOUNTS="$MOUNTS -v $HOST_HOME/.claude.json:$HOST_HOME/.claude.json:ro"
+    MOUNTS="$MOUNTS -v $HOST_HOME/.claude.json:$HOST_HOME/.claude.json"
 fi
 
 # Build network arguments
