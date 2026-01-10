@@ -1,0 +1,15 @@
+I want to use Claude safely with --dangerously-skip-permissions
+
+I need a script that:
+a) uses podman to setup a container
+b) allows to run the container with claude
+
+The container shall:
+- be based on Debian Trixie. Give me a basic Containerfile
+  and install claude in it
+- mount $(pwd) readwrite at the same location. Also I need ~/git/ mounted
+  readonly. When $(pwd) is inside ~/git/, I still need $(pwd) writable and
+  the rest of ~/git/ readonly.
+- Have internet access, but no access to the local network
+- optionally no internet access at all
+- network access to selected hosts/ports

@@ -1,0 +1,35 @@
+[Unit]
+Description=Claude Code Restricted Network Namespace
+Documentation=file:///home/sascha/claude/README.md
+After=network.target
+Wants=network.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+
+# Path to allowed-hosts.conf file
+# Change this to your actual path if different
+Environment="ALLOWED_HOSTS=/home/sascha/claude/allowed-hosts.conf"
+
+# Setup script - creates namespace and configures iptables
+ExecStart=/home/sascha/claude/setup-claude-netns.sh ${ALLOWED_HOSTS}
+
+# Cleanup script - removes namespace and iptables rules
+ExecStop=/home/sascha/claude/cleanup-claude-netns.sh
+
+# Restart policy
+Restart=no
+
+# Security settings
+# Run as root (required for network namespace management)
+User=root
+Group=root
+
+# Logging
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=claude-netns
+
+[Install]
+WantedBy=multi-user.target

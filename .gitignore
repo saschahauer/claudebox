@@ -1,0 +1,5 @@
+# Claude Code local configuration
+.claude/
+
+# Generated hosts configuration (users should copy from .example)
+allowed-hosts.conf

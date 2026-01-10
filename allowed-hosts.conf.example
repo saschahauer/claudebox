@@ -1,0 +1,46 @@
+# Allowed Hosts Configuration
+#
+# This file lists hosts and ports that should be accessible from the Claude container.
+# The network namespace with iptables will enforce these rules at the IP level.
+#
+# FORMAT:
+#   hostname:port          - Allow specific host and port
+#   hostname:port1,port2   - Allow specific host with multiple ports
+#   hostname               - Allow host on common ports (80, 443)
+#   IP.ADD.RE.SS:port      - Allow specific IP and port
+#
+# Lines starting with # are comments and will be ignored.
+# Empty lines are also ignored.
+#
+# SECURITY NOTE:
+# This provides TRUE network filtering via iptables in a network namespace.
+# Only connections to listed hosts/ports will be allowed.
+# DNS queries (port 53) are allowed by default for name resolution.
+#
+# To use this file:
+#   cp allowed-hosts.conf.example allowed-hosts.conf
+#   # Edit allowed-hosts.conf to add your hosts
+#   sudo systemctl start claude-netns.service  # Setup namespace
+#   ./run-claude.sh --allow-hosts allowed-hosts.conf
+
+# Example: Anthropic API (HTTPS)
+api.anthropic.com:443
+
+# Example: GitHub for code access (HTTPS and SSH)
+github.com:443
+github.com:22
+
+# Example: Claude releases (HTTPS)
+releases.claude.ai:443
+
+# Example: PyPI for package downloads (HTTPS)
+pypi.org:443
+files.pythonhosted.org:443
+
+# Example: NPM registry (HTTPS)
+registry.npmjs.org:443
+
+# Example: Allow host on default web ports (80, 443)
+# example.com
+
+# Add your own hosts below:
