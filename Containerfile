@@ -11,6 +11,7 @@ RUN apt-get update && apt-get install -y \
     python3-pip \
     virtualenv \
     flex \
+    vim \
     gawk \
     lz4 \
     util-linux \
