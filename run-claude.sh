@@ -109,6 +109,16 @@ if [ ! -d "$CLAUDE_HOME" ]; then
 fi
 MOUNTS="$MOUNTS -v $CLAUDE_HOME:$HOST_HOME:rw"
 
+# Mount ~/.claude directory and ~/.claude.json from host if they exist
+if [ -d "$HOST_HOME/.claude" ]; then
+    MOUNTS="$MOUNTS -v $HOST_HOME/.claude:$HOST_HOME/.claude:rw"
+    echo "Mounting host Claude config directory: ~/.claude"
+fi
+if [ -f "$HOST_HOME/.claude.json" ]; then
+    MOUNTS="$MOUNTS -v $HOST_HOME/.claude.json:$HOST_HOME/.claude.json:rw"
+    echo "Mounting host Claude config file: ~/.claude.json"
+fi
+
 # Mount current directory read-write (unless it's inside ~/claude)
 if [[ "$CURRENT_DIR" != "$CLAUDE_HOME"* ]]; then
     MOUNTS="$MOUNTS -v $CURRENT_DIR:$CURRENT_DIR:rw"
