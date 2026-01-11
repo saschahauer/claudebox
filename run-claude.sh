@@ -89,6 +89,7 @@ HOST_USER=$(whoami)
 HOST_UID=$(id -u)
 HOST_GID=$(id -g)
 HOST_HOME=$HOME
+HOST_TZ=$(cat /etc/timezone 2>/dev/null || timedatectl show --property=Timezone --value 2>/dev/null || echo "UTC")
 
 # Calculate absolute paths
 CURRENT_DIR=$(realpath .)
@@ -127,6 +128,12 @@ fi
 # Add git directory mount if it exists (unless it's inside ~/claude)
 if [ -n "$GIT_DIR" ] && [[ "$GIT_DIR" != "$CLAUDE_HOME"* ]]; then
     MOUNTS="$MOUNTS -v $GIT_DIR:$GIT_DIR:ro"
+fi
+
+# Mount timezone info from host to sync time with host
+MOUNTS="$MOUNTS -v /etc/localtime:/etc/localtime:ro"
+if [ -f /etc/timezone ]; then
+    MOUNTS="$MOUNTS -v /etc/timezone:/etc/timezone:ro"
 fi
 
 # Build network arguments
@@ -204,6 +211,7 @@ exec podman run \
     --security-opt label=disable \
     -e HOME=$HOST_HOME \
     -e PATH="$HOST_HOME/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin" \
+    -e TZ=$HOST_TZ \
     -w "$CURRENT_DIR" \
     $MOUNTS \
     $NETWORK_ARGS \
