@@ -203,6 +203,7 @@ exec podman run \
     --user $HOST_UID:$HOST_GID \
     --security-opt label=disable \
     -e HOME=$HOST_HOME \
+    -e PATH="$HOST_HOME/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin" \
     -w "$CURRENT_DIR" \
     $MOUNTS \
     $NETWORK_ARGS \
