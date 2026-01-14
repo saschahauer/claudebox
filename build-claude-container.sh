@@ -5,6 +5,10 @@ echo "Building Claude sandbox container..."
 podman build -t claude-sandbox:latest -f Containerfile .
 
 echo ""
+echo "Cleaning up dangling images..."
+podman image prune -f
+
+echo ""
 echo "Container built successfully: claude-sandbox:latest"
 echo "Run with: ./run-claude.sh [options] [claude-arguments]"
 echo ""
