@@ -37,6 +37,8 @@ RUN apt-get update && apt-get install -y \
     gcc-multilib \
     bash \
     bash-completion \
+    sudo \
+    bison \
     && rm -rf /var/lib/apt/lists/*
 
 # Install Claude and set up PATH
