@@ -21,7 +21,7 @@
 #   cp allowed-hosts.conf.example allowed-hosts.conf
 #   # Edit allowed-hosts.conf to add your hosts
 #   sudo systemctl start claude-netns.service  # Setup namespace
-#   ./run-claude.sh --allow-hosts allowed-hosts.conf
+#   ./claudebox --allow-hosts allowed-hosts.conf
 
 # Example: Anthropic API (HTTPS)
 api.anthropic.com:443

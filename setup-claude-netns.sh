@@ -200,4 +200,4 @@ log_info "  sudo ip netns exec $NETNS_NAME ping -c 1 8.8.8.8  (should fail if no
 log_info "  sudo ip netns exec $NETNS_NAME curl https://api.anthropic.com  (should work if allowed)"
 log_info ""
 log_info "Run Claude in namespace:"
-log_info "  ./run-claude.sh --allow-hosts allowed-hosts.conf"
+log_info "  ./claudebox --allow-hosts allowed-hosts.conf"

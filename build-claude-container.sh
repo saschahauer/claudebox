@@ -10,7 +10,7 @@ podman image prune -f
 
 echo ""
 echo "Container built successfully: claude-sandbox:latest"
-echo "Run with: ./run-claude.sh [options] [claude-arguments]"
+echo "Run with: ./claudebox [options] [claude-arguments]"
 echo ""
 echo "Options:"
 echo "  --no-internet, -n           Disable all network access"

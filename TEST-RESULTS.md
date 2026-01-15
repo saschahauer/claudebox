@@ -22,7 +22,7 @@ podman run --rm --user $(id -u):$(id -g) --userns=keep-id claude-sandbox:latest 
 
 Tested basic container startup with default networking:
 ```bash
-echo | ./run-claude.sh
+echo | ./claudebox
 ```
 **Result**: Claude started successfully with bypass permissions warning ✅
 
@@ -43,7 +43,7 @@ sudo ./setup-claude-netns.sh allowed-hosts.conf
 ./status-claude-netns.sh
 
 # 3. Test filtered mode
-./run-claude.sh --allow-hosts allowed-hosts.conf
+./claudebox --allow-hosts allowed-hosts.conf
 
 # 4. Inside Claude container, test connectivity
 # Should work: curl https://github.com
@@ -55,7 +55,7 @@ sudo ./setup-claude-netns.sh allowed-hosts.conf
 
 **Manual testing required**:
 ```bash
-./run-claude.sh --no-internet
+./claudebox --no-internet
 # Inside Claude, network commands should fail completely
 ```
 
@@ -65,12 +65,12 @@ sudo ./setup-claude-netns.sh allowed-hosts.conf
 ```bash
 # Test 1: From outside ~/git/
 cd /tmp
-./run-claude.sh
+./claudebox
 # Verify: current dir is writable, ~/git/ is readonly
 
 # Test 2: From inside ~/git/
 cd ~/git/some-project
-./run-claude.sh
+./claudebox
 # Verify: current project is writable, other projects in ~/git/ are readonly
 ```
 
@@ -85,7 +85,7 @@ All basic functionality is working as expected.
 ✅ All implementation files created:
 - Containerfile
 - build-claude-container.sh
-- run-claude.sh
+- claudebox
 - setup-claude-netns.sh
 - cleanup-claude-netns.sh
 - status-claude-netns.sh
@@ -115,7 +115,7 @@ sudo systemctl enable claude-netns.service  # Optional: auto-start on boot
 ./status-claude-netns.sh
 
 # Run Claude with filtered network
-./run-claude.sh --allow-hosts allowed-hosts.conf
+./claudebox --allow-hosts allowed-hosts.conf
 
 # Inside Claude, ask it to test connectivity:
 # "Can you test network connectivity to github.com and google.com?"
@@ -125,7 +125,7 @@ sudo systemctl enable claude-netns.service  # Optional: auto-start on boot
 ### 3. Test No-Internet Mode
 
 ```bash
-./run-claude.sh --no-internet
+./claudebox --no-internet
 
 # Inside Claude:
 # "Can you check if you have internet access?"
@@ -137,7 +137,7 @@ sudo systemctl enable claude-netns.service  # Optional: auto-start on boot
 ```bash
 # From within ~/git/
 cd ~/git/barebox  # or any project
-./run-claude.sh
+./claudebox
 
 # Inside Claude:
 # "Can you create a test file in the current directory?"
@@ -233,7 +233,7 @@ The following features are implemented but need sudo access to test:
 
 The system is ready for production use. Users can:
 1. Build container: `./build-claude-container.sh`
-2. Run immediately: `./run-claude.sh`
+2. Run immediately: `./claudebox`
 3. Configure filtered networking when ready (requires sudo)
 
 **Overall Status**: ✅ **SUCCESS** - All core features working, advanced features implemented and documented.

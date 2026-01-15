@@ -30,17 +30,17 @@ SETUP (for --allow-hosts):
   1. Create allowed-hosts.conf with your hosts (see allowed-hosts.conf.example)
   2. Setup network namespace: sudo ./setup-claude-netns.sh allowed-hosts.conf
      OR use systemd: sudo systemctl start claude-netns.service
-  3. Run: ./run-claude.sh --allow-hosts allowed-hosts.conf
+  3. Run: ./claudebox --allow-hosts allowed-hosts.conf
 
 EXAMPLES:
-  ./run-claude.sh                                    # Default: internet, no local network
-  ./run-claude.sh --no-internet                      # No network at all
-  ./run-claude.sh --allow-hosts allowed-hosts.conf   # Filtered via iptables (requires setup)
-  ./run-claude.sh --shell                            # Start bash for testing
+  ./claudebox                                    # Default: internet, no local network
+  ./claudebox --no-internet                      # No network at all
+  ./claudebox --allow-hosts allowed-hosts.conf   # Filtered via iptables (requires setup)
+  ./claudebox --shell                            # Start bash for testing
 
   # Pass arguments to Claude:
-  ./run-claude.sh "help me debug this code"
-  ./run-claude.sh --no-internet "analyze this function"
+  ./claudebox "help me debug this code"
+  ./claudebox --no-internet "analyze this function"
 
 SECURITY NOTES:
   - Container runs with --dangerously-skip-permissions (no permission prompts)

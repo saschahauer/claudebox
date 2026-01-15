@@ -1,6 +1,6 @@
-# Claude Code Sandbox Container
+# claudebox
 
-A containerized environment for running Claude Code with `--dangerously-skip-permissions` safely using Podman.
+A containerized sandbox for running Claude Code with `--dangerously-skip-permissions` safely using Podman.
 
 ## Features
 
@@ -47,7 +47,7 @@ ip netns list  # Should work without errors
 
 2. **Run Claude in the container**:
    ```bash
-   ./run-claude.sh
+   ./claudebox
    ```
 
 3. **Chat with Claude** - you're now running in an isolated environment!
@@ -58,17 +58,17 @@ ip netns list  # Should work without errors
 
 ```bash
 # Run with default settings (internet access, no local network)
-./run-claude.sh
+./claudebox
 
 # Pass arguments to Claude
-./run-claude.sh "help me debug this code"
+./claudebox "help me debug this code"
 ```
 
 ### Network Modes
 
 #### Default: Internet with Local Network Isolation
 ```bash
-./run-claude.sh
+./claudebox
 ```
 - Full internet access via user-mode networking (slirp4netns)
 - No access to local network (192.168.x.x, 10.x.x.x, etc.)
@@ -77,7 +77,7 @@ ip netns list  # Should work without errors
 
 #### No Internet
 ```bash
-./run-claude.sh --no-internet
+./claudebox --no-internet
 ```
 - Complete network isolation
 - Use when working with sensitive code
@@ -104,7 +104,7 @@ sudo systemctl enable claude-netns.service  # Optional: start on boot
 
 **Usage**:
 ```bash
-./run-claude.sh --allow-hosts allowed-hosts.conf
+./claudebox --allow-hosts allowed-hosts.conf
 ```
 
 **How it works**:
@@ -155,7 +155,7 @@ All other arguments are passed directly to Claude.
 To test the container environment without running Claude:
 
 ```bash
-./run-claude.sh --shell
+./claudebox --shell
 
 # Inside the container shell, you can:
 # - Test network connectivity: curl https://github.com
@@ -170,8 +170,10 @@ To test the container environment without running Claude:
 
 The container is based on Debian Trixie (slim) and includes:
 - Claude Code CLI installed at `/usr/local/bin/claude`
-- Minimal dependencies (curl, ca-certificates)
-- No unnecessary packages
+- Cross-compiler toolchains for embedded development (ARM, RISC-V, etc.)
+- Build tools and dependencies for barebox development
+- QEMU for testing embedded systems
+- Minimal base dependencies (curl, ca-certificates)
 
 ### Mount Strategy
 
@@ -356,7 +358,7 @@ Three modes available:
 
 ### Container doesn't start
 
-**Problem**: Error messages when running `./run-claude.sh`
+**Problem**: Error messages when running `./claudebox`
 
 **Solutions**:
 1. Check image exists: `podman images | grep claude-sandbox`
@@ -368,7 +370,7 @@ Three modes available:
 
 ### Custom Network Configuration
 
-Edit `run-claude.sh` to add custom network settings:
+Edit `claudebox` to add custom network settings:
 
 ```bash
 # Example: Add custom DNS server
@@ -380,7 +382,7 @@ NETWORK_ARGS="$NETWORK_ARGS -p 8080:8080"
 
 ### Additional Mounts
 
-Add more directories to the mount list in `run-claude.sh`:
+Add more directories to the mount list in `claudebox`:
 
 ```bash
 # Example: Mount a data directory readonly
@@ -410,7 +412,7 @@ Add resource constraints to the podman run command:
 **Core files**:
 - `Containerfile` - Container image definition (Debian Trixie + Claude)
 - `build-claude-container.sh` - Builds the container image
-- `run-claude.sh` - Runs Claude in the container with all options
+- `claudebox` - Runs Claude in the container with all options
 - `allowed-hosts.conf.example` - Example configuration for allowed hosts
 
 **Network namespace management**:

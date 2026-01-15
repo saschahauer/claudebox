@@ -117,7 +117,7 @@ fi
 log_section "Summary"
 if sudo ip netns list | grep -q "^${NETNS_NAME}"; then
     echo "  Status: ${GREEN}Ready to use${NC}"
-    echo "  Run: ./run-claude.sh --allow-hosts allowed-hosts.conf"
+    echo "  Run: ./claudebox --allow-hosts allowed-hosts.conf"
 else
     echo "  Status: ${RED}Not configured${NC}"
     echo "  Setup required before using --allow-hosts mode"

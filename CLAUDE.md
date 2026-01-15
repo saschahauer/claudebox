@@ -4,7 +4,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is a containerized security sandbox for running Claude Code with `--dangerously-skip-permissions` safely. It uses Podman containers with sophisticated network isolation to prevent Claude from accessing unintended resources.
+**claudebox** is a containerized security sandbox for running Claude Code with `--dangerously-skip-permissions` safely. It uses Podman containers with sophisticated network isolation to prevent Claude from accessing unintended resources.
+
+The container includes cross-compiler toolchains and build tools for embedded development, particularly for barebox bootloader development.
 
 **Key security concept**: The sandbox provides three network isolation modes:
 1. **Default (slirp4netns)**: Internet access with automatic local network isolation
@@ -19,16 +21,16 @@ This is a containerized security sandbox for running Claude Code with `--dangero
 ./build-claude-container.sh
 
 # Run Claude in the container (default: internet with local network isolation)
-./run-claude.sh
+./claudebox
 
 # Run with complete network isolation
-./run-claude.sh --no-internet
+./claudebox --no-internet
 
 # Run with network filtering (requires setup first)
-./run-claude.sh --allow-hosts allowed-hosts.conf
+./claudebox --allow-hosts allowed-hosts.conf
 
 # Start bash shell in container for testing
-./run-claude.sh --shell
+./claudebox --shell
 ```
 
 ### Network Namespace Management (for filtered mode)
@@ -59,11 +61,11 @@ cp allowed-hosts.conf.example allowed-hosts.conf
 
 ### Container Build (Containerfile)
 - **Base image**: debian:trixie-slim
-- **Packages**: Includes build tools (gcc, python3, qemu, etc.) for embedded development work
+- **Packages**: Includes build tools (gcc, python3, qemu, etc.) and cross-compiler toolchains for embedded development work, specifically prepared for barebox bootloader development
 - **Claude installation**: Installed via official installer, then binary copied to /usr/local/bin/claude
 - Why copy binary: /root is not accessible to non-root container users
 
-### Run Script (run-claude.sh)
+### Run Script (claudebox)
 **Mount strategy**:
 - **Home directory**: `~/claude` on host → `~` in container (read-write)
   - This is where Claude's state, config, and data are stored
@@ -139,7 +141,7 @@ In setup-claude-netns.sh, rule order matters:
 This ensures DNS works for resolution but only whitelisted destinations are reachable.
 
 ### Security-Opt Label Disable
-`--security-opt label=disable` is used in run-claude.sh because:
+`--security-opt label=disable` is used in claudebox because:
 - SELinux labels can cause permission issues with user namespace mapping
 - This is safe within a container (SELinux still protects host)
 - Required for proper file access in mounted directories
@@ -149,7 +151,7 @@ This ensures DNS works for resolution but only whitelisted destinations are reac
 ### Testing Network Isolation
 Use `--shell` mode to test without running Claude:
 ```bash
-./run-claude.sh --shell
+./claudebox --shell
 # Inside container:
 curl https://github.com      # Test internet
 curl http://192.168.1.1      # Should fail (local network blocked)
