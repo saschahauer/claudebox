@@ -26,6 +26,8 @@ RUN apt-get update && apt-get install -y \
     u-boot-tools \
     yamllint \
     pkg-config \
+    libssl-dev \
+    libseccomp-dev \
     qemu-system-arm \
     qemu-system-misc \
     qemu-system-mips \
