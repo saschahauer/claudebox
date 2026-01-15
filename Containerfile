@@ -71,7 +71,7 @@ RUN pip3 install -q --no-cache-dir --break-system-packages \
     ln -s $(which pytest) /usr/local/bin/labgrid-pytest
 
 RUN pip3 install -q --no-cache-dir --break-system-packages \
-    git+https://github.com/saschahauer/barebox-bringup.git@master
+    git+https://github.com/saschahauer/barebox-bringup.git@06c50e846fd63f09de2eceac281baff047b36da0
 
 ENV CROSS_COMPILE_arm=/opt/gcc-${GCC_VERSION}-nolibc/arm-linux-gnueabi/bin/arm-linux-gnueabi-
 ENV CROSS_COMPILE_arm64=/opt/gcc-${GCC_VERSION}-nolibc/aarch64-linux/bin/aarch64-linux-
